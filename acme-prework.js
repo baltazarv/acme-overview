@@ -14,7 +14,7 @@ var products = [
   {
     id: 2,
     price: 3,
-    name: 'bar' 
+    name: 'bar'
   },
   {
     id: 3,
@@ -46,25 +46,52 @@ var lineItems = [
 //keys are the ids of products
 //the values are the products themselves
 function generateProductsMap(products){
-  //TODO
+  return products.reduce(function(acc, cur) {
+    //acc.set(cur.id, cur)
+    acc[cur.id] = cur
+    return acc
+  }, {}) // new Map()
 }
 
 //returns an object
 //keys are the ids of products
 //value is the total revenue for that product
 function salesByProduct(products, lineItems){
-  //TODO
+  var prodMap = generateProductsMap(products)
+  return lineItems.reduce(function(acc, cur) {
+    var productId = cur.productId
+    if (acc[productId]) {
+      acc[productId] = acc[productId] + prodMap[productId].price
+    } else {
+      acc[productId] = prodMap[productId].price
+    }
+    return acc
+  }, {})
 }
 
 //return the total revenue for all products
 function totalSales(products, lineItems){
-  //TODO
-
+  var sales = salesByProduct(products, lineItems)
+  var total = 0
+  for (id in sales) {
+    total += sales[id]
+  }
+  return total
 }
 
 //return the product responsible for the most revenue
 function topSellerByRevenue(products, lineItems){
-  //TODO
+  var sales = salesByProduct(products, lineItems),
+    topSale = 0,
+    topSeller = '',
+    prodMap = generateProductsMap(products)
+  for (id in sales) {
+    if (sales[id] > topSale) {
+      topSale = sales[id]
+      topSeller = id
+    }
+  }
+  return prodMap[topSeller]
 }
 console.log(`generates product map - should be
 {
